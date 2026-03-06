@@ -16,10 +16,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    if (!supabaseUrl || !supabaseKey) {
+      return NextResponse.json(
+        { error: 'Server configuration error: missing Supabase credentials' },
+        { status: 500 }
+      )
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseKey)
     const { data, error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -27,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     if (authError || !data.session) {
       return NextResponse.json(
-        { error: 'Invalid email or password' },
+        { error: authError?.message || 'Authentication failed' },
         { status: 401 }
       )
     }
@@ -37,9 +44,16 @@ export async function POST(request: NextRequest) {
       select: { role: true },
     })
 
-    if (!dbUser || !ALLOWED_ROLES.includes(dbUser.role as AdminRole)) {
+    if (!dbUser) {
       return NextResponse.json(
-        { error: 'Access denied. Admin privileges required.' },
+        { error: `User not found in database (id: ${data.user.id})` },
+        { status: 403 }
+      )
+    }
+
+    if (!ALLOWED_ROLES.includes(dbUser.role as AdminRole)) {
+      return NextResponse.json(
+        { error: `Access denied. Your role "${dbUser.role}" is not authorized.` },
         { status: 403 }
       )
     }
@@ -54,13 +68,13 @@ export async function POST(request: NextRequest) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
     })
 
     return response
-  } catch {
+  } catch (err) {
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: `Internal server error: ${err instanceof Error ? err.message : 'unknown'}` },
       { status: 500 }
     )
   }
