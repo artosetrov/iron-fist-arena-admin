@@ -26,6 +26,7 @@ async function getMatchHistory(characterIds: string[]) {
       goldReward: true,
       xpReward: true,
       matchType: true,
+      isRevenge: true,
       turnsTaken: true,
       playedAt: true,
       player1: { select: { characterName: true } },

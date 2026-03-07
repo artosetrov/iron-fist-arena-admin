@@ -41,9 +41,15 @@ type Character = {
   level: number
   prestigeLevel: number
   gold: number
+  arenaTokens: number
+  statPointsAvailable: number
   pvpRating: number
   pvpWins: number
   pvpLosses: number
+  pvpWinStreak: number
+  pvpCalibrationGames: number
+  firstWinToday: boolean
+  freePvpToday: number
   str: number
   agi: number
   vit: number
@@ -52,6 +58,7 @@ type Character = {
   wis: number
   luk: number
   cha: number
+  currentHp: number
   maxHp: number
   armor: number
   magicResist: number
@@ -87,6 +94,7 @@ type Match = {
   goldReward: number
   xpReward: number
   matchType: string
+  isRevenge: boolean
   turnsTaken: number
   playedAt: string
   player1: { characterName: string }
@@ -358,10 +366,10 @@ export function PlayerDetailClient({
                       </div>
                     </div>
                     <Separator className="my-2" />
-                    <div className="grid grid-cols-3 gap-2 text-xs">
+                    <div className="grid grid-cols-4 gap-2 text-xs">
                       <div>
                         <span className="text-muted-foreground">HP</span>
-                        <p className="font-medium">{char.maxHp}</p>
+                        <p className="font-medium">{char.currentHp}/{char.maxHp}</p>
                       </div>
                       <div>
                         <span className="text-muted-foreground">W/L</span>
@@ -370,6 +378,29 @@ export function PlayerDetailClient({
                       <div>
                         <span className="text-muted-foreground">Stamina</span>
                         <p className="font-medium">{char.currentStamina}/{char.maxStamina}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Stat Pts</span>
+                        <p className="font-medium">{char.statPointsAvailable}</p>
+                      </div>
+                    </div>
+                    <Separator className="my-2" />
+                    <div className="grid grid-cols-4 gap-2 text-xs">
+                      <div>
+                        <span className="text-muted-foreground">Arena Tkns</span>
+                        <p className="font-medium">{char.arenaTokens}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Calibration</span>
+                        <p className="font-medium">{char.pvpCalibrationGames}/10</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Win Streak</span>
+                        <p className="font-medium">{char.pvpWinStreak}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Free PvP</span>
+                        <p className="font-medium">{char.freePvpToday}/3</p>
                       </div>
                     </div>
                   </CardContent>
@@ -463,7 +494,10 @@ export function PlayerDetailClient({
                           <span className="font-medium">{match.player2.characterName}</span>
                         </td>
                         <td className="px-4 py-3">
-                          <Badge variant="secondary">{match.matchType}</Badge>
+                          <div className="flex gap-1">
+                            <Badge variant="secondary">{match.matchType}</Badge>
+                            {match.isRevenge && <Badge variant="warning">Revenge</Badge>}
+                          </div>
                         </td>
                         <td className="px-4 py-3">
                           {isWinner ? (
