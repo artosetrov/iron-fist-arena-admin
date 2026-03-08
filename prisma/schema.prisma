@@ -95,6 +95,18 @@ enum EventType {
   tournament
 }
 
+enum SkillDamageType {
+  physical
+  magical
+  true_damage
+}
+
+enum SkillTargetType {
+  single_enemy
+  self_buff
+  aoe
+}
+
 enum DungeonDifficulty {
   easy
   normal
@@ -612,6 +624,33 @@ model AdminLog {
   @@map("admin_logs")
 }
 
+// --- Item Balance ---
+
+model ItemBalanceProfile {
+  id          String   @id @default(uuid())
+  itemType    ItemType @unique @map("item_type")
+  statWeights Json     @map("stat_weights")
+  powerWeight Float    @default(1.0) @map("power_weight")
+  description String?
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  updatedBy   String?  @map("updated_by")
+
+  @@map("item_balance_profiles")
+}
+
+model BalanceSimulationRun {
+  id        String   @id @default(uuid())
+  runType   String   @map("run_type")
+  config    Json
+  results   Json
+  summary   String?
+  createdBy String?  @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([runType, createdAt(sort: Desc)])
+  @@map("balance_simulation_runs")
+}
+
 // --- Dungeon System ---
 
 model Dungeon {
@@ -722,4 +761,30 @@ model DungeonDrop {
   item          Item        @relation(fields: [itemId], references: [id])
 
   @@map("dungeon_drops")
+}
+
+// --- Skills ---
+
+model Skill {
+  id               String           @id @default(uuid())
+  skillKey         String           @unique @map("skill_key")
+  name             String
+  description      String?
+  classRestriction CharacterClass?  @map("class_restriction")
+  damageBase       Int              @default(0) @map("damage_base")
+  damageScaling    Json?            @map("damage_scaling")
+  damageType       SkillDamageType  @default(physical) @map("damage_type")
+  targetType       SkillTargetType  @default(single_enemy) @map("target_type")
+  cooldown         Int              @default(0)
+  manaCost         Int              @default(0) @map("mana_cost")
+  effectJson       Json?            @map("effect_json")
+  unlockLevel      Int              @default(1) @map("unlock_level")
+  maxRank          Int              @default(5) @map("max_rank")
+  rankScaling      Float            @default(0.1) @map("rank_scaling")
+  icon             String?
+  sortOrder        Int              @default(0) @map("sort_order")
+  isActive         Boolean          @default(true) @map("is_active")
+  createdAt        DateTime         @default(now()) @map("created_at")
+
+  @@map("skills")
 }
