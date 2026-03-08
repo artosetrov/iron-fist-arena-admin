@@ -147,7 +147,7 @@ export async function createRecord(
     const safeTable = sanitizeName(tableName)
 
     const validation = validateRecordData(data)
-    if (validation.error) return { error: validation.error }
+    if ('error' in validation) return { error: validation.error }
     const { entries } = validation
 
     const columns = entries.map(([col]) => `"${sanitizeName(col)}"`).join(', ')
@@ -180,7 +180,7 @@ export async function updateRecord(
     const safePk = sanitizeName(pkColumn)
 
     const validation = validateRecordData(data)
-    if (validation.error) return { error: validation.error }
+    if ('error' in validation) return { error: validation.error }
     const { entries } = validation
 
     const setClauses = entries
