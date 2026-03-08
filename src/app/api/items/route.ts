@@ -2,6 +2,25 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAdminUser } from '@/lib/auth'
 
+export async function GET(req: NextRequest) {
+  const admin = await getAdminUser()
+  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const { searchParams } = new URL(req.url)
+  const id = searchParams.get('id')
+
+  if (id) {
+    const item = await prisma.item.findUnique({ where: { id } })
+    if (!item) return NextResponse.json({ error: 'Item not found' }, { status: 404 })
+    return NextResponse.json(item)
+  }
+
+  const items = await prisma.item.findMany({
+    orderBy: [{ rarity: 'desc' }, { itemLevel: 'desc' }, { itemName: 'asc' }],
+  })
+  return NextResponse.json(items)
+}
+
 export async function POST(req: NextRequest) {
   const admin = await getAdminUser()
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -24,6 +43,9 @@ export async function POST(req: NextRequest) {
         sellPrice: body.sellPrice,
         description: body.description,
         imageUrl: body.imageUrl,
+        dropChance: body.dropChance !== undefined ? Number(body.dropChance) : 0,
+        itemClass: body.itemClass || null,
+        upgradeConfig: body.upgradeConfig || null,
       },
     })
     return NextResponse.json(item)
@@ -57,6 +79,9 @@ export async function PUT(req: NextRequest) {
         sellPrice: data.sellPrice,
         description: data.description,
         imageUrl: data.imageUrl,
+        dropChance: data.dropChance !== undefined ? Number(data.dropChance) : undefined,
+        itemClass: data.itemClass !== undefined ? (data.itemClass || null) : undefined,
+        upgradeConfig: data.upgradeConfig !== undefined ? (data.upgradeConfig || null) : undefined,
       },
     })
     return NextResponse.json(item)
