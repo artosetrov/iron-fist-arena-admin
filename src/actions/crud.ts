@@ -147,8 +147,8 @@ export async function createRecord(
     const safeTable = sanitizeName(tableName)
 
     const validation = validateRecordData(data)
-    if ('error' in validation) return { error: validation.error }
-    const { entries } = validation
+    if (validation.error) return { error: validation.error }
+    const entries = validation.entries!
 
     const columns = entries.map(([col]) => `"${sanitizeName(col)}"`).join(', ')
     const values = entries.map(([, val]) => formatValue(val)).join(', ')
@@ -180,8 +180,8 @@ export async function updateRecord(
     const safePk = sanitizeName(pkColumn)
 
     const validation = validateRecordData(data)
-    if ('error' in validation) return { error: validation.error }
-    const { entries } = validation
+    if (validation.error) return { error: validation.error }
+    const entries = validation.entries!
 
     const setClauses = entries
       .map(([col, val]) => `"${sanitizeName(col)}" = ${formatValue(val)}`)
