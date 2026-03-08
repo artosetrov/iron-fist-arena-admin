@@ -274,7 +274,7 @@ export function DataTable({
                         onClick={() => onEdit(row)}
                         title="Edit"
                       >
-                        <Pencil className="h-3.5 w-3.5" />
+                        <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
@@ -283,7 +283,7 @@ export function DataTable({
                         title="Delete"
                         className="text-destructive hover:text-destructive"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </td>
                   </tr>
