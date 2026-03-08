@@ -1,8 +1,11 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { getAdminUser } from '@/lib/auth'
 
 export async function getDashboardStats() {
+  const admin = await getAdminUser()
+  if (!admin) throw new Error('Unauthorized')
   const [totalUsers] = await prisma.$queryRaw<[{ count: bigint }]>`
     SELECT COUNT(*) as count FROM users
   `
@@ -33,6 +36,8 @@ export async function getDashboardStats() {
 }
 
 export async function getRegistrationChart() {
+  const admin = await getAdminUser()
+  if (!admin) throw new Error('Unauthorized')
   const rows = await prisma.$queryRaw<{ date: string; count: bigint }[]>`
     SELECT DATE(created_at) as date, COUNT(*) as count
     FROM users
@@ -44,6 +49,8 @@ export async function getRegistrationChart() {
 }
 
 export async function getPvpChart() {
+  const admin = await getAdminUser()
+  if (!admin) throw new Error('Unauthorized')
   const rows = await prisma.$queryRaw<{ date: string; count: bigint }[]>`
     SELECT DATE(played_at) as date, COUNT(*) as count
     FROM pvp_matches
@@ -55,6 +62,8 @@ export async function getPvpChart() {
 }
 
 export async function getClassDistribution() {
+  const admin = await getAdminUser()
+  if (!admin) throw new Error('Unauthorized')
   const rows = await prisma.$queryRaw<{ class: string; count: bigint }[]>`
     SELECT class, COUNT(*) as count
     FROM characters
@@ -65,6 +74,8 @@ export async function getClassDistribution() {
 }
 
 export async function getTopPlayers() {
+  const admin = await getAdminUser()
+  if (!admin) throw new Error('Unauthorized')
   const rows = await prisma.$queryRaw<{
     character_name: string
     class: string

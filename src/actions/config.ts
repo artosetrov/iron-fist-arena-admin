@@ -1,8 +1,11 @@
 'use server'
 
 import { prisma } from '@/lib/prisma'
+import { getAdminUser } from '@/lib/auth'
 
 export async function getAllConfigs() {
+  const admin = await getAdminUser()
+  if (!admin) throw new Error('Unauthorized')
   return prisma.gameConfig.findMany({
     orderBy: [{ category: 'asc' }, { key: 'asc' }],
   })
@@ -41,11 +44,15 @@ export async function updateConfig(key: string, value: unknown, adminId: string)
 }
 
 export async function deleteConfig(key: string) {
+  const admin = await getAdminUser()
+  if (!admin) throw new Error('Unauthorized')
   await prisma.gameConfig.delete({ where: { key } })
   return { success: true }
 }
 
 export async function seedDefaultConfigs() {
+  const admin = await getAdminUser()
+  if (!admin) throw new Error('Unauthorized')
   const defaults: { key: string; value: unknown; category: string; description: string }[] = [
     // Stamina
     { key: 'stamina.max', value: 120, category: 'stamina', description: 'Maximum stamina capacity' },

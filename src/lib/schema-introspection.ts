@@ -2,6 +2,14 @@ import { prisma } from './prisma'
 import type { TableInfo, ColumnInfo } from '@/types/schema'
 
 const SYSTEM_TABLES = ['_prisma_migrations', 'schema_migrations']
+const SAFE_NAME_RE = /^[a-zA-Z_][a-zA-Z0-9_]*$/
+
+function sanitizeName(name: string): string {
+  if (!SAFE_NAME_RE.test(name)) {
+    throw new Error(`Invalid identifier: "${name}". Only alphanumeric characters and underscores are allowed.`)
+  }
+  return name
+}
 
 export async function getTables(): Promise<string[]> {
   const result = await prisma.$queryRaw<{ table_name: string }[]>`
@@ -17,9 +25,10 @@ export async function getTables(): Promise<string[]> {
 }
 
 export async function getTableInfo(tableName: string): Promise<TableInfo> {
-  const columns = await getColumns(tableName)
+  const safeTable = sanitizeName(tableName)
+  const columns = await getColumns(safeTable)
   const countResult = await prisma.$queryRawUnsafe<{ count: bigint }[]>(
-    `SELECT COUNT(*) as count FROM "${tableName}"`
+    `SELECT COUNT(*) as count FROM "${safeTable}"`
   )
   const row_count = Number(countResult[0]?.count || 0)
   return { table_name: tableName, columns, row_count }
@@ -104,23 +113,40 @@ export async function getTableRows(
 ) {
   const { page = 1, pageSize = 20, search, searchColumn, orderBy, orderDir = 'desc' } = options
   const offset = (page - 1) * pageSize
+  const safeTable = sanitizeName(tableName)
+  const safePageSize = Math.min(Math.max(1, Math.floor(pageSize)), 100)
+  const safeOffset = Math.max(0, Math.floor(offset))
+  const safeOrderDir = orderDir === 'asc' ? 'ASC' : 'DESC'
 
   let whereClause = ''
+  const queryParams: unknown[] = []
   if (search && searchColumn) {
-    whereClause = `WHERE "${searchColumn}"::text ILIKE '%${search.replace(/'/g, "''")}%'`
+    const safeSearchCol = sanitizeName(searchColumn)
+    queryParams.push(`%${search}%`)
+    whereClause = `WHERE "${safeSearchCol}"::text ILIKE $1`
   }
 
   const orderClause = orderBy
-    ? `ORDER BY "${orderBy}" ${orderDir}`
+    ? `ORDER BY "${sanitizeName(orderBy)}" ${safeOrderDir}`
     : `ORDER BY 1 DESC`
 
-  const rows = await prisma.$queryRawUnsafe(
-    `SELECT * FROM "${tableName}" ${whereClause} ${orderClause} LIMIT ${pageSize} OFFSET ${offset}`
-  )
+  const rows = queryParams.length > 0
+    ? await prisma.$queryRawUnsafe(
+        `SELECT * FROM "${safeTable}" ${whereClause} ${orderClause} LIMIT ${safePageSize} OFFSET ${safeOffset}`,
+        ...queryParams
+      )
+    : await prisma.$queryRawUnsafe(
+        `SELECT * FROM "${safeTable}" ${orderClause} LIMIT ${safePageSize} OFFSET ${safeOffset}`
+      )
 
-  const countResult = await prisma.$queryRawUnsafe<{ count: bigint }[]>(
-    `SELECT COUNT(*) as count FROM "${tableName}" ${whereClause}`
-  )
+  const countResult = queryParams.length > 0
+    ? await prisma.$queryRawUnsafe<{ count: bigint }[]>(
+        `SELECT COUNT(*) as count FROM "${safeTable}" ${whereClause}`,
+        ...queryParams
+      )
+    : await prisma.$queryRawUnsafe<{ count: bigint }[]>(
+        `SELECT COUNT(*) as count FROM "${safeTable}"`
+      )
   const totalRows = Number(countResult[0]?.count || 0)
 
   return { rows: rows as Record<string, unknown>[], totalRows, page, pageSize }

@@ -1,8 +1,11 @@
 'use server'
 
 import { getSupabaseAdmin } from '@/lib/supabase'
+import { getAdminUser } from '@/lib/auth'
 
 export async function listAssets(bucket: string, path?: string) {
+  const admin = await getAdminUser()
+  if (!admin) throw new Error('Unauthorized')
   const supabase = getSupabaseAdmin()
   const { data, error } = await supabase.storage
     .from(bucket)
@@ -13,6 +16,8 @@ export async function listAssets(bucket: string, path?: string) {
 }
 
 export async function uploadAsset(bucket: string, path: string, formData: FormData) {
+  const admin = await getAdminUser()
+  if (!admin) throw new Error('Unauthorized')
   const supabase = getSupabaseAdmin()
   const file = formData.get('file') as File
   if (!file) throw new Error('No file provided')
@@ -36,6 +41,8 @@ export async function uploadAsset(bucket: string, path: string, formData: FormDa
 }
 
 export async function deleteAsset(bucket: string, path: string) {
+  const admin = await getAdminUser()
+  if (!admin) throw new Error('Unauthorized')
   const supabase = getSupabaseAdmin()
   const { error } = await supabase.storage
     .from(bucket)
@@ -46,6 +53,8 @@ export async function deleteAsset(bucket: string, path: string) {
 }
 
 export async function getAssetUrl(bucket: string, path: string) {
+  const admin = await getAdminUser()
+  if (!admin) throw new Error('Unauthorized')
   const supabase = getSupabaseAdmin()
   const { data } = supabase.storage
     .from(bucket)
