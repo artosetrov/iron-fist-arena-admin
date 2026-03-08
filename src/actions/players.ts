@@ -162,7 +162,7 @@ export async function grantItem(characterId: string, itemId: string) {
   validateUUID(itemId, 'itemId')
 
   // Verify the item actually exists before granting.
-  const item = await prisma.item.findUnique({ where: { id: itemId }, select: { id: true, name: true } })
+  const item = await prisma.item.findUnique({ where: { id: itemId }, select: { id: true, itemName: true } })
   if (!item) throw new Error('Item not found')
 
   await prisma.equipmentInventory.create({
@@ -171,7 +171,7 @@ export async function grantItem(characterId: string, itemId: string) {
       itemId,
     },
   })
-  auditLog(admin, 'grant_item', `character/${characterId}`, { itemId, itemName: item.name })
+  auditLog(admin, 'grant_item', `character/${characterId}`, { itemId, itemName: item.itemName })
   return { success: true }
 }
 
