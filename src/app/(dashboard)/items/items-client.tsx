@@ -11,8 +11,9 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select'
-import { Plus, Search, Trash2, Pencil, Sword } from 'lucide-react'
-import { ITEM_TYPES, RARITIES, RARITY_COLORS } from '@/lib/item-constants'
+import { Plus, Search, Trash2, Pencil, Eye, Sword } from 'lucide-react'
+import { ITEM_TYPES, RARITIES, RARITY_COLORS, type ItemFormData } from '@/lib/item-constants'
+import { ItemPreviewModal } from './_components/item-preview-modal'
 
 type Item = {
   id: string
@@ -24,6 +25,16 @@ type Item = {
   buyPrice: number
   sellPrice: number
   imageUrl: string | null
+  // Full data for preview
+  baseStats: Record<string, number> | null
+  specialEffect: string | null
+  uniquePassive: string | null
+  setName: string | null
+  description: string | null
+  classRestriction: string | null
+  upgradeConfig: Record<string, unknown> | null
+  dropChance: number | null
+  itemClass: string | null
 }
 
 export function ItemsClient({ items }: { items: Item[] }) {
@@ -34,7 +45,36 @@ export function ItemsClient({ items }: { items: Item[] }) {
   const [filterRarity, setFilterRarity] = useState<string>('all')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deletingItem, setDeletingItem] = useState<Item | null>(null)
+  const [previewItem, setPreviewItem] = useState<Item | null>(null)
   const [error, setError] = useState('')
+
+  function itemToFormData(item: Item): ItemFormData {
+    const cfg = (item.upgradeConfig ?? {}) as Record<string, unknown>
+    return {
+      catalogId: item.catalogId,
+      itemName: item.itemName,
+      itemType: item.itemType,
+      itemClass: item.itemClass ?? '',
+      rarity: item.rarity,
+      itemLevel: item.itemLevel,
+      classRestriction: item.classRestriction ?? 'none',
+      setName: item.setName ?? '',
+      stats: (item.baseStats ?? {}) as Record<string, number>,
+      maxUpgradeLevel: (cfg.maxLevel as number) ?? 10,
+      scalingType: (cfg.scalingType as string) ?? 'linear',
+      upgradeScaling: ((cfg.perLevel as Record<string, number>) ?? {}),
+      specialEffect: item.specialEffect ?? '',
+      uniquePassive: item.uniquePassive ?? '',
+      buyPrice: item.buyPrice,
+      sellPrice: item.sellPrice,
+      dropChance: item.dropChance ?? 0,
+      imageUrl: item.imageUrl ?? '',
+      imagePrompt: '',
+      imageStyle: '',
+      imageSize: '',
+      description: item.description ?? '',
+    }
+  }
 
   const filtered = useMemo(() => {
     return items.filter((item) => {
@@ -174,6 +214,17 @@ export function ItemsClient({ items }: { items: Item[] }) {
                       <Button
                         variant="ghost"
                         size="icon"
+                        title="Preview"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setPreviewItem(item)
+                        }}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={(e) => {
                           e.stopPropagation()
                           router.push(`/items/${item.id}/edit`)
@@ -223,6 +274,15 @@ export function ItemsClient({ items }: { items: Item[] }) {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Item Preview Modal */}
+      {previewItem && (
+        <ItemPreviewModal
+          form={itemToFormData(previewItem)}
+          open={!!previewItem}
+          onOpenChange={(open) => { if (!open) setPreviewItem(null) }}
+        />
+      )}
     </>
   )
 }

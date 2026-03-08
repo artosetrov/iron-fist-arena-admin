@@ -7,9 +7,17 @@ import {
   RARITY_COLORS, RARITY_TEXT_COLORS, RARITY_BORDER_COLORS,
   STAT_KEYS, type ItemFormData,
 } from '@/lib/item-constants'
-import { Sword, Shield, Coins, Sparkles, Zap, TrendingUp, Gem } from 'lucide-react'
+import { Sword, Shield, Coins, Sparkles, Zap, TrendingUp, Gem, X } from 'lucide-react'
 
-export function ItemPreviewCard({ form }: { form: ItemFormData }) {
+interface ItemPreviewCardProps {
+  form: ItemFormData
+  /** When provided, renders a close (X) button in the top-right corner */
+  onClose?: () => void
+  /** Additional className for the card wrapper */
+  className?: string
+}
+
+export function ItemPreviewCard({ form, onClose, className }: ItemPreviewCardProps) {
   const nonZeroStats = STAT_KEYS.filter(s => (form.stats[s.key] ?? 0) > 0)
   const hasEffects = form.specialEffect || form.uniquePassive
   const hasEconomy = form.buyPrice > 0 || form.sellPrice > 0 || form.dropChance > 0
@@ -17,9 +25,19 @@ export function ItemPreviewCard({ form }: { form: ItemFormData }) {
   const borderColor = RARITY_BORDER_COLORS[form.rarity] ?? 'border-border'
 
   return (
-    <Card className={`w-full ${borderColor} border-2 bg-card/80 backdrop-blur`}>
-      <CardHeader className="pb-3 pt-4 px-4">
-        {/* Item Image */}
+    <Card className={`w-full ${borderColor} border-2 bg-card/80 backdrop-blur ${className ?? ''}`}>
+      <CardHeader className="pb-3 pt-4 px-4 relative">
+        {/* Close button */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors z-10"
+            aria-label="Close"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+        {/* Item Image + Info */}
         <div className="flex items-start gap-3">
           <div className={`w-20 h-20 rounded-lg border-2 ${borderColor} bg-muted flex items-center justify-center overflow-hidden shrink-0`}>
             {form.imageUrl ? (
@@ -33,7 +51,7 @@ export function ItemPreviewCard({ form }: { form: ItemFormData }) {
               <Sword className="h-8 w-8 text-muted-foreground/50" />
             )}
           </div>
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 pr-4">
             <h3 className={`text-lg font-bold leading-tight ${RARITY_TEXT_COLORS[form.rarity] ?? 'text-foreground'}`}>
               {form.itemName || 'Unnamed Item'}
             </h3>
