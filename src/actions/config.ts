@@ -67,17 +67,17 @@ export async function seedDefaultConfigs() {
     { key: 'stamina.free_pvp_per_day', value: 3, category: 'stamina', description: 'Free PvP matches per day (no stamina cost)' },
 
     // Gold Rewards
-    { key: 'gold_rewards.pvp_win_base', value: 100, category: 'gold_rewards', description: 'Base gold reward for PvP win' },
-    { key: 'gold_rewards.pvp_loss_base', value: 30, category: 'gold_rewards', description: 'Base gold reward for PvP loss' },
+    { key: 'gold_rewards.pvp_win_base', value: 150, category: 'gold_rewards', description: 'Base gold reward for PvP win' },
+    { key: 'gold_rewards.pvp_loss_base', value: 50, category: 'gold_rewards', description: 'Base gold reward for PvP loss' },
     { key: 'gold_rewards.training_win', value: 50, category: 'gold_rewards', description: 'Gold reward for training win' },
     { key: 'gold_rewards.training_loss', value: 20, category: 'gold_rewards', description: 'Gold reward for training loss' },
     { key: 'gold_rewards.revenge_multiplier', value: 1.5, category: 'gold_rewards', description: 'Multiplier for revenge match gold rewards' },
 
     // XP Rewards
-    { key: 'xp_rewards.pvp_win_xp', value: 80, category: 'xp_rewards', description: 'XP reward for PvP win' },
-    { key: 'xp_rewards.pvp_loss_xp', value: 20, category: 'xp_rewards', description: 'XP reward for PvP loss' },
-    { key: 'xp_rewards.training_win_xp', value: 40, category: 'xp_rewards', description: 'XP reward for training win' },
-    { key: 'xp_rewards.training_loss_xp', value: 10, category: 'xp_rewards', description: 'XP reward for training loss' },
+    { key: 'xp_rewards.pvp_win_xp', value: 120, category: 'xp_rewards', description: 'XP reward for PvP win' },
+    { key: 'xp_rewards.pvp_loss_xp', value: 40, category: 'xp_rewards', description: 'XP reward for PvP loss' },
+    { key: 'xp_rewards.training_win_xp', value: 60, category: 'xp_rewards', description: 'XP reward for training win' },
+    { key: 'xp_rewards.training_loss_xp', value: 20, category: 'xp_rewards', description: 'XP reward for training loss' },
 
     // First Win Bonus
     { key: 'first_win_bonus.gold_mult', value: 2, category: 'first_win_bonus', description: 'Gold multiplier for first win of the day' },
@@ -109,6 +109,26 @@ export async function seedDefaultConfigs() {
     { key: 'combat.min_damage', value: 1, category: 'combat', description: 'Minimum damage dealt per attack' },
     { key: 'combat.crit_multiplier', value: 1.5, category: 'combat', description: 'Critical hit damage multiplier' },
     { key: 'combat.max_crit_chance', value: 50, category: 'combat', description: 'Maximum critical hit chance (%)' },
+    { key: 'combat.max_dodge_chance', value: 30, category: 'combat', description: 'Maximum dodge chance (%)' },
+    { key: 'combat.rogue_dodge_bonus', value: 3, category: 'combat', description: 'Rogue class bonus dodge chance (%)' },
+    { key: 'combat.tank_damage_reduction', value: 0.85, category: 'combat', description: 'Tank damage multiplier (0.85 = 15% reduction)' },
+    { key: 'combat.damage_variance', value: 0.10, category: 'combat', description: 'Damage variance range (±10%)' },
+    { key: 'combat.poison_armor_penetration', value: 0.3, category: 'combat', description: 'Poison ignores this % of armor' },
+    { key: 'combat.crit_per_luk', value: 0.7, category: 'combat', description: 'Crit chance per LUK point (%)' },
+    { key: 'combat.crit_per_agi', value: 0.15, category: 'combat', description: 'Crit chance per AGI point (%)' },
+    { key: 'combat.dodge_per_agi', value: 0.2, category: 'combat', description: 'Dodge chance per AGI point (%)' },
+    { key: 'combat.dodge_per_luk', value: 0.1, category: 'combat', description: 'Dodge chance per LUK point (%)' },
+    { key: 'combat.cha_intimidation_per_point', value: 0.15, category: 'combat', description: 'Damage reduction per CHA point (%)' },
+    { key: 'combat.cha_intimidation_cap', value: 15, category: 'combat', description: 'Max CHA intimidation damage reduction (%)' },
+
+    // Win Streaks
+    { key: 'win_streak.3_bonus', value: 0.2, category: 'win_streak', description: '3-win streak gold bonus (+20%)' },
+    { key: 'win_streak.5_bonus', value: 0.5, category: 'win_streak', description: '5-win streak gold bonus (+50%)' },
+    { key: 'win_streak.8_bonus', value: 1.0, category: 'win_streak', description: '8+ win streak gold bonus (+100%)' },
+
+    // Matchmaking
+    { key: 'matchmaking.level_range', value: 3, category: 'matchmaking', description: 'Level range for opponent matching (±)' },
+    { key: 'matchmaking.gear_score_tolerance', value: 0.3, category: 'matchmaking', description: 'Gear score tolerance (±30%)' },
 
     // Prestige
     { key: 'prestige.max_level', value: 50, category: 'prestige', description: 'Maximum character level before prestige' },

@@ -62,6 +62,7 @@ type Character = {
   maxHp: number
   armor: number
   magicResist: number
+  gearScore: number
   currentStamina: number
   maxStamina: number
   equipment: Equipment[]
@@ -372,6 +373,21 @@ export function PlayerDetailClient({
                         <p className="font-medium">{char.currentHp}/{char.maxHp}</p>
                       </div>
                       <div>
+                        <span className="text-muted-foreground">Armor</span>
+                        <p className="font-medium">{char.armor}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">MR</span>
+                        <p className="font-medium">{char.magicResist}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Gear Score</span>
+                        <p className="font-medium">{char.gearScore}</p>
+                      </div>
+                    </div>
+                    <Separator className="my-2" />
+                    <div className="grid grid-cols-4 gap-2 text-xs">
+                      <div>
                         <span className="text-muted-foreground">W/L</span>
                         <p className="font-medium">{char.pvpWins}/{char.pvpLosses}</p>
                       </div>
@@ -383,13 +399,13 @@ export function PlayerDetailClient({
                         <span className="text-muted-foreground">Stat Pts</span>
                         <p className="font-medium">{char.statPointsAvailable}</p>
                       </div>
+                      <div>
+                        <span className="text-muted-foreground">Tokens</span>
+                        <p className="font-medium">{char.arenaTokens}</p>
+                      </div>
                     </div>
                     <Separator className="my-2" />
                     <div className="grid grid-cols-4 gap-2 text-xs">
-                      <div>
-                        <span className="text-muted-foreground">Arena Tkns</span>
-                        <p className="font-medium">{char.arenaTokens}</p>
-                      </div>
                       <div>
                         <span className="text-muted-foreground">Calibration</span>
                         <p className="font-medium">{char.pvpCalibrationGames}/10</p>
@@ -401,6 +417,10 @@ export function PlayerDetailClient({
                       <div>
                         <span className="text-muted-foreground">Free PvP</span>
                         <p className="font-medium">{char.freePvpToday}/3</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">1st Win</span>
+                        <p className="font-medium">{char.firstWinToday ? 'Used' : 'Available'}</p>
                       </div>
                     </div>
                   </CardContent>
