@@ -190,12 +190,12 @@ export function ItemsClient({ items }: { items: Item[] }) {
                   onClick={() => router.push(`/items/${item.id}/edit`)}
                 >
                   <td className="px-4 py-2">
-                    <div className="w-8 h-8 rounded border border-border bg-muted flex items-center justify-center overflow-hidden">
+                    <div className={`w-10 h-10 rounded-lg border-2 flex items-center justify-center overflow-hidden ${item.imageUrl ? 'border-green-600/40 bg-muted' : 'border-dashed border-red-500/30 bg-red-500/5'}`}>
                       {item.imageUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
                       ) : (
-                        <Sword className="h-4 w-4 text-muted-foreground/50" />
+                        <Sword className="h-4 w-4 text-red-400/40" />
                       )}
                     </div>
                   </td>
