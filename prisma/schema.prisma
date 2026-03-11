@@ -554,6 +554,25 @@ model Cosmetic {
   @@map("cosmetics")
 }
 
+model AppearanceSkin {
+  id        String          @id @default(uuid())
+  skinKey   String          @unique @map("skin_key")
+  name      String
+  origin    CharacterOrigin
+  gender    CharacterGender
+  rarity    String          @default("common")
+  priceGold Int             @default(0) @map("price_gold")
+  priceGems Int             @default(0) @map("price_gems")
+  imageUrl  String?         @map("image_url")
+  isDefault Boolean         @default(false) @map("is_default")
+  sortOrder Int             @default(0) @map("sort_order")
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+
+  @@index([origin, gender])
+  @@map("appearance_skins")
+}
+
 model DesignToken {
   id        String   @id @default("global")
   tokens    Json

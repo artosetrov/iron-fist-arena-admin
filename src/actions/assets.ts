@@ -37,7 +37,7 @@ export async function uploadAsset(bucket: string, path: string, formData: FormDa
     .from(bucket)
     .getPublicUrl(path)
 
-  return { publicUrl: urlData.publicUrl }
+  return { publicUrl: `${urlData.publicUrl}?v=${Date.now()}` }
 }
 
 export async function deleteAsset(bucket: string, path: string) {

@@ -143,6 +143,35 @@ export async function seedDefaultConfigs() {
     { key: 'battle_pass.bp_xp_per_dungeon_floor', value: 30, category: 'battle_pass', description: 'Battle Pass XP earned per dungeon floor cleared' },
     { key: 'battle_pass.bp_xp_per_quest', value: 50, category: 'battle_pass', description: 'Battle Pass XP earned per daily quest completed' },
     { key: 'battle_pass.bp_xp_per_achievement', value: 100, category: 'battle_pass', description: 'Battle Pass XP earned per achievement completed' },
+
+    // HP Regen
+    { key: 'hp_regen.regen_rate', value: 1, category: 'hp_regen', description: '% of maxHP regenerated per tick' },
+    { key: 'hp_regen.regen_interval_minutes', value: 5, category: 'hp_regen', description: 'Minutes between HP regen ticks' },
+
+    // Skills
+    { key: 'skills.max_equipped_slots', value: 4, category: 'skills', description: 'Maximum equipped skill slots' },
+    { key: 'skills.upgrade_gold_base', value: 500, category: 'skills', description: 'Base gold cost to upgrade a skill' },
+    { key: 'skills.upgrade_gold_per_rank', value: 500, category: 'skills', description: 'Additional gold per rank for skill upgrade' },
+    { key: 'skills.learn_gold_cost', value: 200, category: 'skills', description: 'Gold cost to learn a new skill' },
+
+    // Passives
+    { key: 'passives.points_per_level', value: 1, category: 'passives', description: 'Passive points gained per level up' },
+    { key: 'passives.max_passive_points', value: 50, category: 'passives', description: 'Maximum total passive points' },
+    { key: 'passives.respec_gem_cost', value: 50, category: 'passives', description: 'Gems to reset passive tree' },
+
+    // Gem Costs
+    { key: 'gem_costs.stamina_refill', value: 30, category: 'gem_costs', description: 'Gems to fully refill stamina' },
+    { key: 'gem_costs.extra_pvp_combat', value: 50, category: 'gem_costs', description: 'Gems for extra PvP when out of stamina' },
+    { key: 'gem_costs.battle_pass_premium', value: 500, category: 'gem_costs', description: 'Gems to unlock premium battle pass' },
+    { key: 'gem_costs.gold_mine_buy_slot', value: 50, category: 'gem_costs', description: 'Gems to buy additional gold mine slot' },
+    { key: 'gem_costs.gold_mine_boost', value: 10, category: 'gem_costs', description: 'Gems to boost gold mine (2x reward)' },
+
+    // Inventory
+    { key: 'inventory.max_slots', value: 100, category: 'inventory', description: 'Absolute maximum inventory slots' },
+    { key: 'inventory.base_slots', value: 28, category: 'inventory', description: 'Starting inventory slots' },
+    { key: 'inventory.expand_amount', value: 10, category: 'inventory', description: 'Slots added per expansion' },
+    { key: 'inventory.expand_cost_gold', value: 5000, category: 'inventory', description: 'Gold cost per inventory expansion' },
+    { key: 'inventory.max_expansions', value: 3, category: 'inventory', description: 'Maximum number of inventory expansions' },
   ]
 
   let created = 0

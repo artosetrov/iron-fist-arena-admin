@@ -30,6 +30,13 @@ const CATEGORY_LABELS: Record<string, string> = {
   upgrade: 'Upgrade',
   battle_pass: 'Battle Pass',
   first_win_bonus: 'First Win Bonus',
+  win_streak: 'Win Streak',
+  matchmaking: 'Matchmaking',
+  hp_regen: 'HP Regen',
+  skills: 'Skills',
+  passives: 'Passives',
+  gem_costs: 'Gem Costs',
+  inventory: 'Inventory',
   general: 'General',
 }
 

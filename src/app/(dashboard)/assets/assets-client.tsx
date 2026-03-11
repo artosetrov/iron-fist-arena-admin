@@ -33,6 +33,7 @@ export function AssetsClient() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [deletingFile, setDeletingFile] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [refreshKey, setRefreshKey] = useState(Date.now())
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const loadFiles = useCallback(() => {
@@ -66,6 +67,7 @@ export function AssetsClient() {
           await uploadAsset(bucket, uploadPath, formData)
         }
         setMessage(`Uploaded ${fileList.length} file(s) successfully.`)
+        setRefreshKey(Date.now())
         loadFiles()
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Upload failed')
@@ -118,7 +120,7 @@ export function AssetsClient() {
     const filePath = path ? `${path}/${fileName}` : fileName
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     if (!supabaseUrl) return null
-    return `${supabaseUrl}/storage/v1/object/public/${bucket}/${filePath}`
+    return `${supabaseUrl}/storage/v1/object/public/${bucket}/${filePath}?v=${refreshKey}`
   }
 
   function isImageFile(name: string) {

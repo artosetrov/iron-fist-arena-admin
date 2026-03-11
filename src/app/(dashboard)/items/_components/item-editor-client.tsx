@@ -536,7 +536,7 @@ export function ItemEditorClient({ item }: { item: DbItem | null }) {
               <div className="flex items-start gap-3">
                 <div className="w-24 h-24 rounded-lg border border-border overflow-hidden bg-muted">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={form.imageUrl} alt="Item" className="w-full h-full object-cover" />
+                  <img src={form.imageUrl} key={form.imageUrl} alt="Item" className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-muted-foreground truncate">{form.imageUrl}</p>
